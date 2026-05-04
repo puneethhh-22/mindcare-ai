@@ -1,0 +1,80 @@
+version: "3.9"
+
+services:
+  # ── MongoDB ──────────────────────────────────────────────
+  mongodb:
+    image: mongo:7.0
+    container_name: mindcare_mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: mindcare_secret
+      MONGO_INITDB_DATABASE: mindcare_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+      - ./backend/scripts/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - mindcare_net
+
+  # ── Redis ─────────────────────────────────────────────────
+  redis:
+    image: redis:7.2-alpine
+    container_name: mindcare_redis
+    restart: unless-stopped
+    command: redis-server --requirepass mindcare_redis_secret
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - mindcare_net
+
+  # ── Backend (FastAPI) ─────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: mindcare_backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      MONGODB_URL: mongodb://admin:mindcare_secret@mongodb:27017
+      REDIS_URL: redis://:mindcare_redis_secret@redis:6379
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongodb
+      - redis
+    volumes:
+      - ./backend:/app
+    networks:
+      - mindcare_net
+
+  # ── Frontend (React/Next.js) ──────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: mindcare_frontend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000/api/v1
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - mindcare_net
+
+volumes:
+  mongo_data:
+  redis_data:
+
+networks:
+  mindcare_net:
+    driver: bridge

@@ -1,0 +1,52 @@
+# ── Secrets ───────────────────────────────────────────────
+.env
+.env.local
+.env.production
+.env.*.local
+*.pem
+*.key
+nginx/ssl/
+
+# ── Python ────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+venv/
+.venv/
+env/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+coverage.xml
+
+# ── Node / Next.js ────────────────────────────────────────
+node_modules/
+.next/
+out/
+.vercel/
+*.tsbuildinfo
+next-env.d.ts
+
+# ── Docker ────────────────────────────────────────────────
+*.log
+
+# ── OS ────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── IDE ───────────────────────────────────────────────────
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# ── Data ──────────────────────────────────────────────────
+mongo_data/
+redis_data/

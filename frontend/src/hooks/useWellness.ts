@@ -46,7 +46,7 @@ export function useWellness() {
   const logWater = useCallback(async (amount_ml: number) => {
     const result = await wellnessApi.logWater(amount_ml);
     setWater({
-      total_ml: result.total_today_ml,
+      total_ml: result.total_ml,
       goal_ml: result.goal_ml,
       percentage: result.percentage,
     });

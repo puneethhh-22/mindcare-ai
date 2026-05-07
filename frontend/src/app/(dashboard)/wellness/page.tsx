@@ -97,7 +97,7 @@ export default function WellnessPage() {
   const logWater = async (amount: number) => {
     try {
       const result = await wellnessApi.logWater(amount);
-      setWater({ total_ml: result.total_today_ml, goal_ml: result.goal_ml, percentage: result.percentage });
+      setWater({ total_ml: result.total_ml, goal_ml: result.goal_ml, percentage: result.percentage });
       toast.success(`+${amount}ml logged 💧`);
     } catch {
       toast.error("Failed to log water");
